@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server",
+    "start-dev": "webpack -w & nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,6 +17,7 @@
     "eslint": "^7.8.1",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-react": "^7.20.6",
+    "nodemon": "^2.0.4",
     "prettier": "^2.1.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
@@ -24,6 +27,10 @@
     "morgan": "^1.10.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-router-dom": "^5.2.0"
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
   }
 }

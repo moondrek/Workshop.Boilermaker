@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 1337;
 app.use(morgan("dev"));
 
 //Static file middleware
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
 //Parser middleware
 app.use(express.json());
@@ -22,6 +22,7 @@ app.get("*", (req, res) => {
 });
 
 //Error handling
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error(err);
 
