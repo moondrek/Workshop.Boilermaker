@@ -6,13 +6,14 @@ const WEALTH_UPDATED = "WEALTH_UPDATED";
 
 //ACTION CREATORS
 
-const wealthInitialized = (newWealth) => ({
+export const wealthInitialized = (newWealth) => ({
   type: WEALTH_INITIALIZED,
   newWealth,
 });
-const wealthUpdated = (updatedWealths) => ({
-  type: WEALTH_INITIALIZED,
-  updatedWealths,
+export const wealthUpdated = (wealthType, delta) => ({
+  type: WEALTH_UPDATED,
+  wealthType,
+  delta,
 });
 
 const wealthReducer = (wealth = initialState, action) => {
@@ -20,7 +21,10 @@ const wealthReducer = (wealth = initialState, action) => {
     case WEALTH_INITIALIZED:
       return action.newWealth;
     case WEALTH_UPDATED:
-      return { ...wealth, ...action.updatedWealths };
+      return {
+        ...wealth,
+        [action.wealthType]: wealth[action.wealthType] + action.delta,
+      };
     default:
       return wealth;
   }
