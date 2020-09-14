@@ -1,8 +1,11 @@
 const path = require("path");
+
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const PORT = process.env.PORT || 1337;
+
+const { db } = require("./db");
 
 //Logging middleware
 app.use(morgan("dev"));
@@ -31,7 +34,13 @@ app.use((err, req, res, next) => {
     .send(err.message || "Uh-oh! We encountered an internal server error");
 });
 
-const init = () => {
+const init = async () => {
+  try {
+    await db.sync({ force: true });
+  } catch (error) {
+    console.error(error);
+  }
+
   app.listen(PORT);
   console.log(`Listening at http://localhost:${PORT}`);
 };
