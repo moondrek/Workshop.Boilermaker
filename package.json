@@ -25,6 +25,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "axios": "^0.20.0",
     "connect-session-sequelize": "^7.0.1",
     "express": "^4.17.1",
     "express-session": "^1.17.1",

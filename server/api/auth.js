@@ -1,6 +1,21 @@
 const router = require("express").Router();
 const { Player } = require("../db");
 
+//GET /api/auth/me
+router.get("/me", async (req, res, next) => {
+  try {
+    if (req.user) {
+      const { name } = await Player.findByPk(req.user.id);
+      res.json({ name });
+    } else {
+      res.sendStatus(403);
+    }
+  } catch (e) {
+    next(e);
+  }
+});
+
+// POST /api/auth/register
 router.post("/register", async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
