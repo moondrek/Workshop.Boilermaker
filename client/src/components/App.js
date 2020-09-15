@@ -35,6 +35,7 @@ const App = (props) => {
       YOU:
       <div>{JSON.stringify(props.player)}</div>
       <h1>LOG IN</h1>
+      <a href="/api/auth/google">Sign In with Google</a>
       <form onSubmit={props.loginPlayer}>
         <label htmlFor="email">Email</label>
         <input name="email" type="email" required></input>

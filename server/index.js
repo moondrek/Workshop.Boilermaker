@@ -1,5 +1,5 @@
 //Environmental Variables
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV !== "production") {
   require("./localSecrets");
 }
 const PORT = process.env.PORT || 1337;

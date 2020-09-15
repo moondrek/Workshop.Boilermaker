@@ -1,7 +1,9 @@
 const router = require("express").Router();
+const passport = require("passport");
 const { Player } = require("../db");
 
 //GET /api/auth/me
+//If there's an authenticated session, tell the user who they are
 router.get("/me", async (req, res, next) => {
   try {
     if (req.user) {
@@ -16,6 +18,7 @@ router.get("/me", async (req, res, next) => {
 });
 
 // POST /api/auth/register
+// Register locally
 router.post("/register", async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -42,6 +45,7 @@ router.post("/register", async (req, res, next) => {
 });
 
 // POST /api/auth/login
+// Login via local whatsit
 router.post("/login", async (req, res, next) => {
   try {
     const player = await Player.findOne({
@@ -65,6 +69,8 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+//DELETE /api/auth/logout
+//remove user from specified session
 router.delete("/logout", async (req, res, next) => {
   try {
     req.logout();
@@ -72,6 +78,14 @@ router.delete("/logout", async (req, res, next) => {
   } catch (e) {
     next(e);
   }
+});
+
+//GET /api/auth/google
+router.get("/google", passport.authenticate("google", { scope: "email" }));
+
+//GET /api/auth/google/verify
+router.get("/google/verify", passport.authenticate("google"), (req, res) => {
+  res.redirect("/");
 });
 
 module.exports = router;

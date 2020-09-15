@@ -23,6 +23,9 @@ const Player = db.define(
     salt: {
       type: DataTypes.STRING,
     },
+    googleId: {
+      type: DataTypes.STRING,
+    },
   },
   {
     hooks: {
@@ -33,6 +36,9 @@ const Player = db.define(
 );
 
 function setSaltAndHash(player) {
+  if (!player.password) {
+    return;
+  }
   player.salt = crypto.randomBytes(16).toString("hex");
   player.password = Player.encryptPassword(player.password, player.salt);
 }
