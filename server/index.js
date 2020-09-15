@@ -9,6 +9,8 @@ const session = require("express-session");
 const morgan = require("morgan");
 //DB/Sequelize
 const { db } = require("./db");
+//Authentication
+const passport = require("passport");
 
 //Logging middleware
 app.use(morgan("dev"));
@@ -34,6 +36,27 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+//Passport authentication middleware
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser(function (user, done) {
+  try {
+    done(null, user.id);
+  } catch (error) {
+    done(error);
+  }
+});
+const { Player } = require("./db");
+passport.deserializeUser(async function (id, done) {
+  try {
+    await Player.findById(id, function (err, user) {
+      done(err, user);
+    });
+  } catch (error) {
+    done(error);
+  }
+});
 
 //Static file middleware
 app.use(express.static(path.join(__dirname, "../client/dist")));
