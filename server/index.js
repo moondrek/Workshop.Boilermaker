@@ -4,67 +4,23 @@ const path = require("path");
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 1337;
-const session = require("express-session");
+
 //Third-party modules
 const morgan = require("morgan");
 //DB/Sequelize
 const { db } = require("./db");
-//Authentication
-const passport = require("passport");
 
-//Logging middleware
+//Logging and Parse middleware
 app.use(morgan("dev"));
-
-//Parser middleware
 app.use(express.json());
 
-//Connect Session Sequelize
-const SequelizeStore = require("connect-session-sequelize")(session.Store);
-const dbSessionStore = new SequelizeStore({ db: db });
-dbSessionStore.sync();
+//Session and Passport Middleware
+app.use(require("./middleware/session"));
+app.use(require("./middleware/passport"));
 
-//Session middleware
-if (!process.env.SESSION_SECRET) {
-  console.log("WARNING!!! SESSION SECRET NOT FOUND!!!");
-}
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "WOW THAT IS DEFINITELY NOT RIGHT",
-    store: dbSessionStore,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-//Passport authentication middleware
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser(function (user, done) {
-  try {
-    done(null, user.id);
-  } catch (error) {
-    done(error);
-  }
-});
-const { Player } = require("./db");
-passport.deserializeUser(async function (id, done) {
-  try {
-    await Player.findById(id, function (err, user) {
-      done(err, user);
-    });
-  } catch (error) {
-    done(error);
-  }
-});
-
-//Static file middleware
+//Static and Routes
 app.use(express.static(path.join(__dirname, "../client/dist")));
-
-//API routes
 app.use("/api", require("./api"));
-
-//Unmatched GET requests get the homepage
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "/client/dist/index.html"));
 });
@@ -73,15 +29,15 @@ app.get("*", (req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error(err);
-
   res
     .status(err.status || 500)
     .send(err.message || "Uh-oh! We encountered an internal server error");
 });
 
+//Initialize the server
 const init = async () => {
   try {
-    await db.sync();
+    await db.sync({ force: false });
   } catch (error) {
     console.error(error);
   }

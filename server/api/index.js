@@ -1,5 +1,6 @@
 const router = require("express").Router();
 
+//GET /api
 router.get("/", (req, res, next) => {
   try {
     req.session.counter = req.session.counter + 1 || 1;
@@ -9,6 +10,8 @@ router.get("/", (req, res, next) => {
     next(error);
   }
 });
+
+router.use("/auth", require("./auth"));
 
 router.use((req, res, next) => {
   const newErr = new Error("API Route Not Found!");
