@@ -1,9 +1,14 @@
+//Environmental Variables
+if (process.env.NODE_ENV === "development") {
+  require("./localSecrets");
+}
+const PORT = process.env.PORT || 1337;
+
 //Node
 const path = require("path");
 //Express+
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 1337;
 
 //Third-party modules
 const morgan = require("morgan");
