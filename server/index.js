@@ -13,6 +13,14 @@ const { db } = require("./db");
 //Logging middleware
 app.use(morgan("dev"));
 
+//Parser middleware
+app.use(express.json());
+
+//Connect Session Sequelize
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const dbSessionStore = new SequelizeStore({ db: db });
+dbSessionStore.sync();
+
 //Session middleware
 if (!process.env.SESSION_SECRET) {
   console.log("WARNING!!! SESSION SECRET NOT FOUND!!!");
@@ -21,6 +29,7 @@ if (!process.env.SESSION_SECRET) {
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "WOW THAT IS DEFINITELY NOT RIGHT",
+    store: dbSessionStore,
     resave: false,
     saveUninitialized: false,
   })
@@ -28,9 +37,6 @@ app.use(
 
 //Static file middleware
 app.use(express.static(path.join(__dirname, "../client/dist")));
-
-//Parser middleware
-app.use(express.json());
 
 //API routes
 app.use("/api", require("./api"));
@@ -52,7 +58,7 @@ app.use((err, req, res, next) => {
 
 const init = async () => {
   try {
-    await db.sync({ force: true });
+    await db.sync();
   } catch (error) {
     console.error(error);
   }
