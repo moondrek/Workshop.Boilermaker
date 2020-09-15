@@ -1,14 +1,30 @@
+//Node
 const path = require("path");
-
+//Express+
 const express = require("express");
 const app = express();
-const morgan = require("morgan");
 const PORT = process.env.PORT || 1337;
-
+const session = require("express-session");
+//Third-party modules
+const morgan = require("morgan");
+//DB/Sequelize
 const { db } = require("./db");
 
 //Logging middleware
 app.use(morgan("dev"));
+
+//Session middleware
+if (!process.env.SESSION_SECRET) {
+  console.log("WARNING!!! SESSION SECRET NOT FOUND!!!");
+}
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "WOW THAT IS DEFINITELY NOT RIGHT",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 //Static file middleware
 app.use(express.static(path.join(__dirname, "../client/dist")));
